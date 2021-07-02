@@ -1,0 +1,22 @@
+syntax = "proto3";
+package com.softlynx.locker.api;
+option go_package = "github.com/softkot/locker/client";
+option java_multiple_files = false;
+option java_package = "ru.softlynx.locker.api";
+option java_outer_classname = "LockerType";
+option objc_class_prefix = "LockerType";
+
+// Авторизация запросов передается в заголовке API_KEY
+service Locker {
+  // Запрашивает блокировку имени Entity.name, как только она будет получена возвращает Entity и владеет именем до отмены вызова клиентом
+  rpc Lock(Entity) returns (stream Entity);
+
+  // Запрашивает блокировку имени Entity.name, если она будет получена возвращает Entity и владеет именем до отмены вызова клиентом
+  // либо возвращает пустой поток если получить блокировку не удалось
+  rpc TryLock(Entity) returns (stream Entity);
+}
+
+message Entity {
+  // идентификатор владения
+  string name = 1;
+}
