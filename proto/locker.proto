@@ -1,5 +1,5 @@
 syntax = "proto3";
-package com.softlynx.locker.api;
+package ru.softlynx.locker.api;
 option go_package = "github.com/softkot/locker/client";
 option java_multiple_files = false;
 option java_package = "ru.softlynx.locker.api";

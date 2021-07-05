@@ -34,7 +34,7 @@ func NewLockerClient(cc grpc.ClientConnInterface) LockerClient {
 }
 
 func (c *lockerClient) Lock(ctx context.Context, in *Entity, opts ...grpc.CallOption) (Locker_LockClient, error) {
-	stream, err := c.cc.NewStream(ctx, &Locker_ServiceDesc.Streams[0], "/com.skllzz.api.Locker/Lock", opts...)
+	stream, err := c.cc.NewStream(ctx, &Locker_ServiceDesc.Streams[0], "/ru.softlynx.locker.api.Locker/Lock", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (x *lockerLockClient) Recv() (*Entity, error) {
 }
 
 func (c *lockerClient) TryLock(ctx context.Context, in *Entity, opts ...grpc.CallOption) (Locker_TryLockClient, error) {
-	stream, err := c.cc.NewStream(ctx, &Locker_ServiceDesc.Streams[1], "/com.skllzz.api.Locker/TryLock", opts...)
+	stream, err := c.cc.NewStream(ctx, &Locker_ServiceDesc.Streams[1], "/ru.softlynx.locker.api.Locker/TryLock", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -176,7 +176,7 @@ func (x *lockerTryLockServer) Send(m *Entity) error {
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Locker_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "com.skllzz.api.Locker",
+	ServiceName: "ru.softlynx.locker.api.Locker",
 	HandlerType: (*LockerServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{

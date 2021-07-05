@@ -18,7 +18,7 @@ spec:
         persistent: "yes"
       containers:
         - name: api-locker
-          image: softlynx/locker:1.0
+          image: softlynx/locker:1.1
           args: []
           envFrom:
             - secretRef:
