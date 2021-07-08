@@ -14,8 +14,6 @@ spec:
       labels:
         app: api-locker
     spec:
-      nodeSelector:
-        persistent: "yes"
       containers:
         - name: api-locker
           image: softlynx/locker:1.1
@@ -28,10 +26,10 @@ spec:
           resources:
             requests:
               memory: "64Mi"
-              cpu: "100m"
+              cpu: "10m"
             limits:
               memory: "64Mi"
-              cpu: "100m"
+              cpu: "1000m"
 ---
 apiVersion: v1
 kind: Service
