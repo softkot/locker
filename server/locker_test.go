@@ -61,7 +61,7 @@ func TestLocalLocker(t *testing.T) {
 	//seed=1625211875
 	t.Logf("seed %v", seed)
 	rand.Seed(seed)
-	l := newLocker()
+	l := NewLocker()
 	wg := &sync.WaitGroup{}
 	values := make([]int, 10)
 	for i := 0; i < 10000; i++ {
@@ -99,7 +99,7 @@ func TestLocalTryLocker(t *testing.T) {
 	//seed=1625211875
 	t.Logf("seed %v", seed)
 	rand.Seed(seed)
-	l := newLocker()
+	l := NewLocker()
 	wg := &sync.WaitGroup{}
 	values := make([]int, 10)
 	for i := 0; i < 10000; i++ {

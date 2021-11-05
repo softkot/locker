@@ -70,7 +70,7 @@ func (l *lockersHolder) String() string {
 	return fmt.Sprintf("Locker created: %v , deleted: %v waiters %v", l.createHolders, l.deleteHolders, l.waiters)
 }
 
-func newLocker() *lockersHolder {
+func NewLocker() *lockersHolder {
 	return &lockersHolder{
 		locker:  &sync.Mutex{},
 		waiters: make(map[string]*nameHolder),
@@ -160,5 +160,5 @@ func (l *lockerServer) TryLock(entity *client.Entity, server client.Locker_TryLo
 }
 
 func NewLockerServer() client.LockerServer {
-	return &lockerServer{locker: newLocker()}
+	return &lockerServer{locker: NewLocker()}
 }
