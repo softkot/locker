@@ -3,10 +3,14 @@ module github.com/softkot/locker
 go 1.17
 
 require (
-	golang.org/x/net v0.0.0-20210614182718-04defd469f4e // indirect
-	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
-	google.golang.org/genproto v0.0.0-20210701133433-6b8dcf568a95 // indirect
-	google.golang.org/grpc v1.39.0 // indirect
-	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0 // indirect
-	google.golang.org/protobuf v1.27.1 // indirect
+	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
+	golang.org/x/sys v0.0.0-20220319134239-a9b59b0215f8 // indirect
+	google.golang.org/genproto v0.0.0-20220324131243-acbaeb5b85eb // indirect
+	google.golang.org/grpc v1.45.0
+	google.golang.org/protobuf v1.28.0
+)
+
+require (
+	github.com/golang/protobuf v1.5.2 // indirect
+	golang.org/x/text v0.3.7 // indirect
 )

@@ -99,7 +99,7 @@ func (l *lockersHolder) Lock(ctx context.Context, name string) {
 	var holder = l.getHolder(name)
 	defer l.unlock(ctx, holder)
 	holder.usage++
-	for holder.locks > 0 {
+	for holder.locks > 0 && ctx.Err() == nil {
 		holder.cond.Wait()
 	}
 	holder.locks++
