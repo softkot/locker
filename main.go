@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/tls"
 	_ "embed"
+	"flag"
 	"github.com/softkot/locker/client"
 	"github.com/softkot/locker/server"
 	"golang.org/x/net/http2"
@@ -25,8 +26,10 @@ var serverCrt []byte
 
 //go:embed server.key
 var serverKey []byte
+var addr = flag.String("addr", "0.0.0.0:8443", "binding ip address")
 
 func main() {
+	flag.Parse()
 	if cert, err := tls.X509KeyPair(serverCrt, serverKey); err != nil {
 		log.Fatal(err)
 	} else {
@@ -59,11 +62,12 @@ func main() {
 		}
 		h2s := &http2.Server{}
 		httpsSrv := &http.Server{
-			Addr:        "0.0.0.0:8443",
+			Addr:        *addr,
 			Handler:     h2c.NewHandler(http.HandlerFunc(handler), h2s),
 			IdleTimeout: 120 * time.Second,
 			TLSConfig:   tlsConfig,
 		}
+		log.Printf("Serving %v\n", httpsSrv.Addr)
 		log.Fatal(httpsSrv.ListenAndServeTLS("", ""))
 	}
 
