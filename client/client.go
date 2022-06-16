@@ -38,7 +38,7 @@ func NewLocker(apiEndpoint string, apiKey string, insecure bool) (*Locker, error
 	if lockerConnection, err := grpc.Dial(
 		apiEndpoint,
 		grpc.WithKeepaliveParams(keepalive.ClientParameters{
-			Time:                time.Second * 10,
+			Time:                time.Second * 30,
 			Timeout:             time.Second * 15,
 			PermitWithoutStream: true,
 		}),
