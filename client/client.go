@@ -40,7 +40,7 @@ func NewLocker(apiEndpoint string, apiKey string, insecure bool) (*Locker, error
 		grpc.WithKeepaliveParams(keepalive.ClientParameters{
 			Time:                time.Second * 30,
 			Timeout:             time.Second * 15,
-			PermitWithoutStream: true,
+			PermitWithoutStream: false,
 		}),
 		grpc.WithTransportCredentials(transportCreds),
 		grpc.WithPerRPCCredentials(&apiKeyAuth{apiKey: apiKey}),
