@@ -3,8 +3,11 @@ package server
 import (
 	"context"
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/softkot/locker/client"
+	"gitlab.com/skllzz/multiop"
 	"math/rand"
+	"os"
 	"sync"
 	"testing"
 	"time"
@@ -12,6 +15,65 @@ import (
 
 func init() {
 
+}
+
+func WithNamedLock(ctx context.Context, l *client.Locker, name string, block func(context.Context) error) error {
+	if name == "" {
+		return block(ctx)
+	}
+	myctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	if err := l.Lock(myctx, name); err != nil {
+		return err
+	} else {
+		return block(myctx)
+	}
+}
+
+func WithNamedTryLock(ctx context.Context, l *client.Locker, name string, block func(context.Context) error) error {
+	if name == "" {
+		return block(ctx)
+	}
+	myctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	if ok, err := l.TryLock(myctx, name); err != nil {
+		return err
+	} else {
+		if ok {
+			return block(myctx)
+		} else {
+			return nil
+		}
+	}
+}
+
+func TestLockWait(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	if l, e := client.NewLocker("localhost:8443", os.Getenv("API_KEY"), true); e != nil {
+		t.Fatal(e)
+	} else {
+		runner := multiop.NewParallelRunner(ctx, 16)
+		for i := 0; i < 5000; i++ {
+			if err := runner.Submit(func(ctx context.Context) error {
+				e := WithNamedTryLock(ctx, l, uuid.NewString(), func(ctx context.Context) error {
+					t.Logf("lock started")
+					select {
+					case <-ctx.Done():
+					case <-time.After(time.Millisecond * 1):
+					}
+					t.Logf("lock completed")
+					return ctx.Err()
+				})
+				return e
+			}); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if err := runner.Await(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	cancel()
 }
 
 func TestRemoteLocker(t *testing.T) {
