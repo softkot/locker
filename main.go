@@ -43,8 +43,9 @@ func main() {
 		}
 		grpcServer := grpc.NewServer(
 			grpc.WriteBufferSize(4096),
-			grpc.KeepaliveEnforcementPolicy(keepalive.EnforcementPolicy{MinTime: 10 * time.Second, PermitWithoutStream: true}),
-			grpc.KeepaliveParams(keepalive.ServerParameters{Timeout: 10 * time.Second}),
+			grpc.KeepaliveParams(keepalive.ServerParameters{
+				Timeout: 10 * time.Second,
+			}),
 			grpc.StreamInterceptor(server.CheckStreamApiKeyAuth),
 			grpc.UnaryInterceptor(server.CheckUnaryApiKeyAuth),
 		)
