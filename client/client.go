@@ -6,7 +6,9 @@ import (
 	"crypto/x509"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/keepalive"
 	"io"
+	"time"
 )
 
 type Locker struct {
@@ -35,6 +37,11 @@ func NewLocker(apiEndpoint string, apiKey string, insecure bool) (*Locker, error
 	})
 	if lockerConnection, err := grpc.Dial(
 		apiEndpoint,
+		grpc.WithKeepaliveParams(keepalive.ClientParameters{
+			Time:                time.Second * 10,
+			Timeout:             time.Second * 15,
+			PermitWithoutStream: true,
+		}),
 		grpc.WithTransportCredentials(transportCreds),
 		grpc.WithPerRPCCredentials(&apiKeyAuth{apiKey: apiKey}),
 	); err != nil {
