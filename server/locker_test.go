@@ -53,7 +53,7 @@ func TestLockWait(t *testing.T) {
 		t.Fatal(e)
 	} else {
 		runner := multiop.NewParallelRunner(ctx, 16)
-		for i := 0; i < 5000; i++ {
+		for i := 0; i < 50000; i++ {
 			if err := runner.Submit(func(ctx context.Context) error {
 				e := WithNamedTryLock(ctx, l, uuid.NewString(), func(ctx context.Context) error {
 					t.Logf("lock started")

@@ -46,6 +46,10 @@ func main() {
 			grpc.KeepaliveParams(keepalive.ServerParameters{
 				Timeout: 10 * time.Second,
 			}),
+			grpc.KeepaliveEnforcementPolicy(keepalive.EnforcementPolicy{
+				MinTime:             time.Second * 1,
+				PermitWithoutStream: true,
+			}),
 			grpc.StreamInterceptor(server.CheckStreamApiKeyAuth),
 			grpc.UnaryInterceptor(server.CheckUnaryApiKeyAuth),
 		)
