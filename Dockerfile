@@ -1,3 +1,5 @@
+# docker build -t softlynx/locker:1.0.7 .
+# docker push softlynx/locker:1.0.7
 FROM golang:1.17-alpine as builder
 RUN mkdir -p /build
 COPY ./ /build/
