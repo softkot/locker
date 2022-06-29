@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"github.com/softkot/locker/api"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/keepalive"
@@ -11,7 +12,7 @@ import (
 	"time"
 )
 
-type Locker struct {
+type localLocker struct {
 	client LockerClient
 }
 
@@ -29,7 +30,7 @@ func (t *apiKeyAuth) RequireTransportSecurity() bool {
 	return true
 }
 
-func NewLocker(apiEndpoint string, apiKey string, insecure bool) (*Locker, error) {
+func NewLocker(apiEndpoint string, apiKey string, insecure bool) (api.Locker, error) {
 	pool, _ := x509.SystemCertPool()
 	transportCreds := credentials.NewTLS(&tls.Config{
 		InsecureSkipVerify: insecure,
@@ -47,13 +48,13 @@ func NewLocker(apiEndpoint string, apiKey string, insecure bool) (*Locker, error
 	); err != nil {
 		return nil, err
 	} else {
-		return &Locker{
+		return &localLocker{
 			client: NewLockerClient(lockerConnection),
 		}, nil
 	}
 }
 
-func (l *Locker) Lock(ctx context.Context, name string) error {
+func (l *localLocker) Lock(ctx context.Context, name string) error {
 	if strm, err := l.client.Lock(ctx, &Entity{Name: name}); err != nil {
 		return err
 	} else {
@@ -64,7 +65,7 @@ func (l *Locker) Lock(ctx context.Context, name string) error {
 	return nil
 }
 
-func (l *Locker) TryLock(ctx context.Context, name string) (bool, error) {
+func (l *localLocker) TryLock(ctx context.Context, name string) (bool, error) {
 	if strm, err := l.client.TryLock(ctx, &Entity{Name: name}); err != nil {
 		return false, err
 	} else {

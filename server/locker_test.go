@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/softkot/locker/api"
 	"github.com/softkot/locker/client"
 	"gitlab.com/skllzz/multiop"
 	"math/rand"
@@ -17,7 +18,7 @@ func init() {
 
 }
 
-func WithNamedLock(ctx context.Context, l *client.Locker, name string, block func(context.Context) error) error {
+func WithNamedLock(ctx context.Context, l api.Locker, name string, block func(context.Context) error) error {
 	if name == "" {
 		return block(ctx)
 	}
@@ -30,7 +31,7 @@ func WithNamedLock(ctx context.Context, l *client.Locker, name string, block fun
 	}
 }
 
-func WithNamedTryLock(ctx context.Context, l *client.Locker, name string, block func(context.Context) error) error {
+func WithNamedTryLock(ctx context.Context, l api.Locker, name string, block func(context.Context) error) error {
 	if name == "" {
 		return block(ctx)
 	}
@@ -172,7 +173,7 @@ func TestLocalTryLocker(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			<-time.After((time.Duration(rand.Intn(50)) + 10) * time.Millisecond)
 			id := fmt.Sprintf("n-%v", e)
-			if l.TryLock(ctx, id) {
+			if ok, _ := l.TryLock(ctx, id); ok {
 				values[e]++
 				<-time.After(5 * time.Second)
 			}
