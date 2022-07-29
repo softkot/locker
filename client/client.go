@@ -30,21 +30,22 @@ func (t *apiKeyAuth) RequireTransportSecurity() bool {
 	return true
 }
 
-func NewLocker(apiEndpoint string, apiKey string, insecure bool) (api.Locker, error) {
+func NewLocker(apiEndpoint string, apiKey string, insecure bool, opts ...grpc.DialOption) (api.Locker, error) {
 	pool, _ := x509.SystemCertPool()
 	transportCreds := credentials.NewTLS(&tls.Config{
 		InsecureSkipVerify: insecure,
 		RootCAs:            pool,
 	})
+	opts = append(opts, grpc.WithTransportCredentials(transportCreds))
+	opts = append(opts, grpc.WithPerRPCCredentials(&apiKeyAuth{apiKey: apiKey}))
+	opts = append(opts, grpc.WithKeepaliveParams(keepalive.ClientParameters{
+		Time:                time.Second * 30,
+		Timeout:             time.Second * 15,
+		PermitWithoutStream: false,
+	}))
 	if lockerConnection, err := grpc.Dial(
 		apiEndpoint,
-		grpc.WithKeepaliveParams(keepalive.ClientParameters{
-			Time:                time.Second * 30,
-			Timeout:             time.Second * 15,
-			PermitWithoutStream: false,
-		}),
-		grpc.WithTransportCredentials(transportCreds),
-		grpc.WithPerRPCCredentials(&apiKeyAuth{apiKey: apiKey}),
+		opts...,
 	); err != nil {
 		return nil, err
 	} else {
