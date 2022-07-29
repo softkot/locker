@@ -38,11 +38,13 @@ func NewLocker(apiEndpoint string, apiKey string, insecure bool, opts ...grpc.Di
 	})
 	opts = append(opts, grpc.WithTransportCredentials(transportCreds))
 	opts = append(opts, grpc.WithPerRPCCredentials(&apiKeyAuth{apiKey: apiKey}))
-	opts = append(opts, grpc.WithKeepaliveParams(keepalive.ClientParameters{
-		Time:                time.Second * 30,
-		Timeout:             time.Second * 15,
-		PermitWithoutStream: false,
-	}))
+	if false {
+		opts = append(opts, grpc.WithKeepaliveParams(keepalive.ClientParameters{
+			Time:                time.Second * 30,
+			Timeout:             time.Second * 15,
+			PermitWithoutStream: false,
+		}))
+	}
 	if lockerConnection, err := grpc.Dial(
 		apiEndpoint,
 		opts...,
