@@ -9,7 +9,6 @@ import (
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/keepalive"
 	"log"
 	"net/http"
 	"os"
@@ -43,13 +42,6 @@ func main() {
 		}
 		grpcServer := grpc.NewServer(
 			grpc.WriteBufferSize(4096),
-			grpc.KeepaliveParams(keepalive.ServerParameters{
-				Timeout: 10 * time.Second,
-			}),
-			grpc.KeepaliveEnforcementPolicy(keepalive.EnforcementPolicy{
-				MinTime:             time.Second * 1,
-				PermitWithoutStream: true,
-			}),
 			grpc.StreamInterceptor(server.CheckStreamApiKeyAuth),
 			grpc.UnaryInterceptor(server.CheckUnaryApiKeyAuth),
 		)
